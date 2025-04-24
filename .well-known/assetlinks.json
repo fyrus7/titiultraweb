@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "dev.pages.titiultraweb.twa",
+        "sha256_cert_fingerprints": ["D0:B4:51:92:B2:47:68:E3:E9:D2:90:82:ED:ED:A2:18:7C:FB:5C:4F:BA:0E:D0:1F:68:35:B3:E4:63:9E:03:67"]
+      }
+    }]
