@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<link rel="stylesheet" href="/bcontain.css">
+	
+ <style>
+html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+	
+body {
+    font-family: Arial, sans-serif;
+    background-color: #E8ECEF;
+}
+
+
+    /* Centering the iframe and making it take up the available space */
+iframe {
+      width: 100%;
+      flex-grow: 1; /* Allow iframe to grow and take up space */
+      border: none;
+    }
+.copyright {
+   /* margin-top: 5px; /* Add some space between social icons and copyright */
+    font-size: 12px; /* Font size for copyright text */
+    color: #455A64; /* Copyright text color */
+}
+
+    /* Footer area to hold the button and copyright */
+footer {
+    margin-top: auto; /* Pushes footer to the bottom */
+    background-color: #E8ECEF; /* Match background color */
+    padding: 5px; /* Add padding */
+    color: #455A64; /* Change text color for visibility */
+    text-align: center;
+}
+
+.prompt {
+  display: none; /* Initially hidden */
+  position: fixed; /* Ensures the modal stays in one place on the screen */
+  top: 10px; /* Align 10px from the top */
+  left: 10px; /* Center the modal horizontally */
+//  transform: translateX(-70%); /* Adjust for perfect centering */
+  width: 90%; /* Make it responsive */
+  max-width: 250px; /* Limit width for larger screens */
+  padding: 10px 20px;
+  background-color: rgba(32, 44, 54, 0.5); /* 50% transparency using rgba */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Shadow for a floating effect */
+  border-radius: 8px; /* Rounded corners */
+  z-index: 9999; /* Ensures it stays above other content */
+}
+
+.prompt .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Ensure space between the logo and install */
+}
+
+.prompt .modal-header img {
+  width: 48px;
+  height: 48px;
+  margin-right: 10px;
+  border-radius: 5px;
+}
+
+.prompt .app-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.prompt .app-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.prompt .app-url {
+  font-size: 12px;
+  color: #b0bec5;
+}
+
+.prompt__install {
+  background-color: #0277bd;
+  color: #ffffff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: auto; /* Ensure it's pushed to the right */
+}
+
+.prompt__install:hover {
+  background-color: #01579b;
+}
+
+.prompt__install:active {
+  background-color: #004f8a;
+}
+
+.prompt .modal-footer {
+  display: flex;
+  justify-content: flex-end; /* Aligns the button to the right */
+  margin-top: 10px;
+}
+.overlay {
+  display: none; /* Initially hidden */
+  position: fixed; /* Covers the whole screen */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent; /* Semi-transparent background */
+  z-index: 9998; /* Below the modal */
+}
+
+
+</style>
+	
+	<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+	<link rel="manifest" href="/favicon/site.webmanifest">
+	<link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#5bbad5">
+	<link rel="shortcut icon" href="/favicon/favicon.ico">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="msapplication-config" content="/favicon/browserconfig.xml">
+	<meta name="theme-color" content="#E8ECEF">
+
+
+  <title>MYRPC</title>
+
+  <!-- meta tags for responsive web on mobile/desktop -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+</head>
+<body>
+
+<div class="overlay"></div>
+<div class="prompt">
+  <div class="modal-header">
+    <img src="/favicon/android-chrome-192x192.png" alt="App Icon">
+    <div class="app-info">
+      <div class="app-name">MyRPC</div>
+      <div class="app-url">app.iamfyrus.com</div>
+    </div>
+    <button type="button" class="prompt__install">Install</button>
+  </div>
+</div>
+
+	
+  <iframe 
+    src="https://script.google.com/macros/s/AKfycbzIvRRjvd8ANiMRov40Dx6Oazwx_iRu9VFc-yDtXhmOkRti6Qn0NDx0opvL2JsAIKLA/exec"
+    allow="camera">
+  </iframe>
+ 
+
+    <!-- Footer area to center the home button and copyright -->
+  <footer>
+    <div class="copyright">
+      &copy; <span id="year"></span> Fyrus Apps. All rights reserved.
+    </div>
+  </footer>
+ 
+
+    <script>	    
+	    // Get the current year from the device and update the copyright span
+		document.getElementById("year").textContent = new Date().getFullYear();
+	</script>
+
+<script>
+const prompt = document.querySelector('.prompt');
+const installButton = prompt.querySelector('.prompt__install');
+const overlay = document.querySelector('.overlay'); // Select the overlay
+let installEvent;
+
+function getVisited() {
+  return sessionStorage.getItem('install-prompt');
+}
+
+function setVisited() {
+  sessionStorage.setItem('install-prompt', true);
+}
+
+// This event will only fire if the user does not have the PWA installed
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault();
+
+  // If no sessionStorage is set, first-time visitor in this session
+  if (!getVisited()) {
+    // Show the prompt banner and overlay
+    prompt.style.display = 'block';
+    overlay.style.display = 'block';
+
+    // Store the event for later use
+    installEvent = event;
+  }
+});
+
+installButton.addEventListener('click', () => {
+  // Hide the prompt banner and overlay
+  prompt.style.display = 'none';
+  overlay.style.display = 'none';
+
+  // Trigger the prompt to show to the user
+  installEvent.prompt();
+
+  // Check what choice the user made
+  installEvent.userChoice.then((choice) => {
+    // If the user declined, we don't want to show the button again
+    // Set sessionStorage to true
+    if (choice.outcome !== 'accepted') {
+      setVisited();
+    }
+
+    installEvent = null;
+  });
+});
+
+// Close the modal when clicking outside of it
+overlay.addEventListener('click', () => {
+  setVisited(); // Set sessionStorage to true
+  prompt.style.display = 'none';  // Hide the prompt banner
+  overlay.style.display = 'none'; // Hide the overlay
+  installEvent = null;
+});
+
+</script>
+  
+</body>
+</html>
