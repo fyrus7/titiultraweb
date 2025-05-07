@@ -231,6 +231,30 @@ overlay.addEventListener('click', () => {
   installEvent = null;
 });
 
+
+  // Halang 'Back' button (workaround)
+  history.pushState(null, '', location.href);
+  window.addEventListener('popstate', function () {
+    const confirmExit = confirm('EXIT?');
+    if (confirmExit) {
+      window.removeEventListener('beforeunload', beforeUnloadHandler); // allow unload
+      history.back(); // allow to go back
+    } else {
+      history.pushState(null, '', location.href); // push again
+    }
+  });
+
+  // Prompt bila cuba keluar/refresh/close
+  function beforeUnloadHandler(e) {
+    e.preventDefault();
+    e.returnValue = 'EXIT?';
+    return 'EXIT?';
+  }
+
+  window.addEventListener('beforeunload', beforeUnloadHandler);
+
+
+
 </script>
   
 </body>
